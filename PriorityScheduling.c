@@ -1,11 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+
 #include "PriorityScheduling.h"
 
 // Global array to store tasks
 Task *tasks;
 int numTasks;
-    
+
+// Global variable to simulate the context switch time
+int contextSwitchTime = 1; // in milliseconds
+
+// Time quantum for Round Robin scheduling
+int timeQuantum = 2;  // in milliseconds 
+  
 // Initialize tasks
 void initializeTasks() {
     tasks = NULL;
@@ -13,19 +22,18 @@ void initializeTasks() {
 }
 
 // Add a new task
-void addTask(int priority, void (*function)(void)) {
+void addTask(int priority, int burstTime, void (*function)(void)) {
     tasks = realloc(tasks, (numTasks + 1) * sizeof(Task));
     if (tasks == NULL) {
         fprintf(stderr, "Memory allocation error\n");
         exit(EXIT_FAILURE);
     }
 
-    Task newTask = {numTasks + 1, priority, function};
+    Task newTask = {numTasks + 1, priority, burstTime, burstTime, function};
     tasks[numTasks++] = newTask;
 }
 
-// Remove a task by ID
-void removeTask(int taskId) {
+Task* removeTask(int taskId) {
     for (int i = 0; i < numTasks; ++i) {
         if (tasks[i].id == taskId) {
             // Remove task by shifting elements
@@ -36,34 +44,76 @@ void removeTask(int taskId) {
             // Decrease the number of tasks
             tasks = realloc(tasks, (numTasks - 1) * sizeof(Task));
             --numTasks;
-            return;
+
+            // Debugging: Print tasks array after removal
+            printf("Debug: Tasks array after removal:\n");
+            for (int k = 0; k < numTasks; ++k) {
+                printf("Debug: Task ID: %d\n", tasks[k].id);
+            }
+
+            return tasks;  // Return the updated pointer
         }
     }
 
     fprintf(stderr, "Task with ID %d not found\n", taskId);
+    return tasks;  // Return the original pointer if the task is not found
 }
 
-// Simple Priority Scheduling
-void scheduleTasks() {
-    while (numTasks > 0) {
-        // Find the task with the highest priority
-        int highestPriority = 0;
-        int highestPriorityTaskIndex = -1;
 
-        for (int j = 0; j < numTasks; ++j) {
-            if (tasks[j].priority > highestPriority) {
-                highestPriority = tasks[j].priority;
-                highestPriorityTaskIndex = j;
+
+void scheduleTasks() {
+    int currentTime = 0;
+    int taskIndex = 0;
+
+    while (numTasks > 0 && tasks != NULL) {
+        // Ensure taskIndex is within bounds
+        taskIndex = taskIndex % numTasks;
+
+        Task *currentTask = &tasks[taskIndex];
+
+        printf("Debug: Current Task ID: %d\n", currentTask->id);
+
+        if (currentTask->remainingTime > 0) {
+            int executionTime = (currentTask->remainingTime < timeQuantum) ? currentTask->remainingTime : timeQuantum;
+
+            printf("Debug: Executing Task %d\n", currentTask->id);
+
+            usleep(contextSwitchTime * 1000);
+
+            currentTask->function();
+
+            currentTask->remainingTime -= executionTime;
+            currentTime += executionTime;
+
+            // Check if taskIndex goes beyond the number of tasks after execution
+            if (taskIndex >= numTasks) {
+                taskIndex = 0;
+            }
+        } else {
+            printf("Debug: Task %d completed. Remaining tasks: %d\n", currentTask->id, numTasks);
+
+            tasks = removeTask(currentTask->id);
+
+            // Check if taskIndex goes beyond the number of tasks after removal
+            if (taskIndex >= numTasks) {
+                taskIndex = 0;
             }
         }
-
-        // Execute the task with the highest priority
-        if (highestPriorityTaskIndex != -1) {
-            tasks[highestPriorityTaskIndex].function();
-            // Mark the task as executed by setting priority to a very low value
-            tasks[highestPriorityTaskIndex].priority = -1;
-        }
     }
+}
+
+
+
+
+
+// Context Switching logic (a more realistic simulation)
+void contextSwitch() {
+    struct timespec sleepTime, remaining;
+
+    sleepTime.tv_sec = 0;
+    sleepTime.tv_nsec = contextSwitchTime * 1000000;  // Convert milliseconds to nanoseconds
+
+    nanosleep(&sleepTime, &remaining);
 }
 
 // Cleanup function

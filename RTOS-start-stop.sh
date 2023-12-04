@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Path to the directory where your application is installed
 APP_DIR="."

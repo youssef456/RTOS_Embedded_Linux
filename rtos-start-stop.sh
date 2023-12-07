@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # Path to the directory where your application is installed
-APP_DIR="/usr/bin/"
+APP_DIR="."
 
 # Command to run your application
-APP_COMMAND="rtos"
+APP_COMMAND="./rtos"
 
 # Run your application
 echo "Running RTOS..."

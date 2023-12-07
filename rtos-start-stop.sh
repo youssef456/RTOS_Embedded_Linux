@@ -4,7 +4,7 @@
 APP_DIR="."
 
 # Command to run your application
-APP_COMMAND="./RTOS"
+APP_COMMAND="/usr/bin/rtos"
 
 # Run your application
 echo "Running my_program..."

@@ -7,6 +7,6 @@ APP_DIR="."
 APP_COMMAND="/usr/bin/rtos"
 
 # Run your application
-echo "Running my_program..."
+echo "Running RTOS..."
 ${APP_COMMAND}
 

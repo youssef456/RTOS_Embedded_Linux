@@ -1,24 +1,35 @@
-CC = $(CC)
-CFLAGS = $(CFLAGS)
+CROSS_COMPILE ?=
+CC ?= $(CROSS_COMPILE)gcc
+CFLAGS ?= -g -Wall -Werror
+TARGET ?= rtos
+LDFLAGS ?= -lpthread -lrt
+CCFLAGS ?= -Wall -g -c
 
-SRC_DIR = src
-BUILD_DIR = ${WORKDIR}/build
+# Source and object directories
+SRC_DIR := src
+OBJ_DIR := obj
 
-TARGET = rtos
+# List of source files
+SRCS := $(wildcard $(SRC_DIR)/*.c)
 
-all: ${TARGET}
+# List of object files
+OBJS := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
-${TARGET}: ${OBJS}
-	$(CC) $(CFLAGS) -o $@ $^
+default: $(TARGET)
 
-${BUILD_DIR}/%.o: ${SRC_DIR}/%.c | ${BUILD_DIR}
-	$(CC) $(CFLAGS) -c -o $@ $<
+all: default
 
-${BUILD_DIR}:
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
 	mkdir -p $@
 
 clean:
-	rm -rf ${BUILD_DIR} ${TARGET}
+	rm -f $(TARGET) $(OBJS)
 
-.PHONY: all clean
+.PHONY: default all clean
 

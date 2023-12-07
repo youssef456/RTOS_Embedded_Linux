@@ -1,8 +1,14 @@
-CROSS_COMPILE ?=
+#CROSS_COMPILE ?=
+CROSS_COMPILE ?= aarch64-poky-linux-
+
 CC ?= $(CROSS_COMPILE)gcc
+
 CFLAGS ?= -g -Wall -Werror
+
 TARGET ?= rtos
+
 LDFLAGS ?= -lpthread -lrt
+
 CCFLAGS ?= -Wall -g -c
 
 # Source and object directories

@@ -4,9 +4,9 @@
 APP_DIR="/usr/bin/"
 
 # Command to run your application
-APP_COMMAND="./rtos"
+APP_COMMAND="rtos"
 
 # Run your application
 echo "Running RTOS..."
-${APP_COMMAND}
+${APP_DIR}${APP_COMMAND}
 

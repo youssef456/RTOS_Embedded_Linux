@@ -25,11 +25,6 @@ $(TARGET): $(OBJS)
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(EXTRA_CFLAGS) -c $< -o $@
 
-$(OBJ_DIR):
-	mkdir -p $@
-
 clean:
 	rm -f $(TARGET) $(OBJS)
-
-.PHONY: default all clean
 

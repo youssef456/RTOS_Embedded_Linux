@@ -8,7 +8,7 @@ SRCS = $(wildcard $(SRC_DIR)/*.c)
 # List of object files
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 # Executable name
-TARGET = RTOS
+TARGET = rtos
 
 all: $(TARGET)
 

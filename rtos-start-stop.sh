@@ -1,11 +1,14 @@
 #!/bin/sh
 
-# Path to the directory where your application is installed
-APP_DIR="/usr/bin/"
+# Set the path to your application in the root filesystem
+APP_PATH="/usr/bin/rtos"
 
-# Command to run your application
-APP_COMMAND="rtos"
+# Check if the application exists
+if [ -x "$APP_PATH" ]; then
+    # Run your application
+    echo "Running RTOS..."
+    $APP_PATH
+else
+    echo "Error: RTOS executable not found at $APP_PATH"
+fi
 
-# Run your application
-echo "Running RTOS..."
-${APP_DIR}${APP_COMMAND}

@@ -1,7 +1,7 @@
 #CROSS_COMPILE ?=
-CROSS_COMPILE ?= aarch64-poky-linux-
+#CROSS_COMPILE ?= aarch64-poky-linux-
 
-CC ?= $(CROSS_COMPILE)gcc
+#CC ?= $(CROSS_COMPILE)gcc
 
 CFLAGS ?= -g -Wall -Werror
 

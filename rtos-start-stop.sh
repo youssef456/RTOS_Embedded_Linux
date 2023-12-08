@@ -1,12 +1,11 @@
-#!/bin/sh
+[Unit]
+Description=RTOS Application
+After=network.target
 
-# Path to the directory where your application is installed
-APP_DIR="/usr/bin/"
+[Service]
+ExecStart=/usr/bin/rtos
+Restart=on-failure
 
-# Command to run your application
-APP_COMMAND="rtos"
-
-# Run your application
-echo "Running RTOS..."
-${APP_DIR}${APP_COMMAND}
+[Install]
+WantedBy=default.target
 
